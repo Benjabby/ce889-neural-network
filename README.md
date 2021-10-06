@@ -97,5 +97,5 @@ To speed up hyper-parameter searching, parallel processing was introduced using 
 ## `TrainedNetwork`
 This class represents a trained a `NeuralNetwork` object
 
-## `Neuron`
-Unusued class from initial inefficient scalar-based implementation
+## All Other Classes
+All other classes remain unusued. They are from the initial inefficient scalar-based implementation
