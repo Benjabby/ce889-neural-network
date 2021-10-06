@@ -1,0 +1,10 @@
+﻿  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.24215.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /I"C:\Program Files\MobileRobots\ARIA\include" /ZI /W3 /WX- /sdl /O2 /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /Qpar /Qpar-report:1 /arch:AVX /Qvec-report:1 NeuralNetworkManager.cpp
+  
+  NeuralNetworkManager.cpp
+e:\ce889 - neural networks and deep learning\assignment\solo task\neuralnet\neuralnet\neuralnetworkmanager.cpp(50): warning C4101: 'ex': unreferenced local variable
+e:\ce889 - neural networks and deep learning\assignment\solo task\neuralnet\neuralnet\neuralnetworkmanager.cpp(252): warning C4018: '<': signed/unsigned mismatch
+  NeuralNet.vcxproj -> E:\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\Debug\NeuralNet.exe
+  NeuralNet.vcxproj -> E:\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\Debug\NeuralNet.pdb (Full PDB)
