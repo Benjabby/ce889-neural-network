@@ -7,8 +7,8 @@ Code will still run to only train the neural network if all dependencies to Aria
 Code for a neural network assignment to implement a single hidden-layer neural network in C++ using the C++ standard library. The neural network is then applied to an Aria robot using the Aria API.
 
 
-## `Utilities`
-Contains matrix functionality and other useful utilities.
+## `MatrixFast`
+Contains custom implemented, fast matrix functionality.
 
 ## `NeuralNetworkManager`
 Provides functionality to train and test multiple neural networks with different hyper-parameters.
