@@ -2,10 +2,13 @@
 As I have graduated and no longer have access to university resources including a working copy of Visual Studio, I am unable to verify the steps required to install the Aria API in order to get this code running.
 Code will still run to only train the neural network if all dependencies to Aria.h are removed and `RUNROBOT` in `NeuralNetworkManager.h` is set to `false`
 
+
 # ce889-neural-network
 Code for a neural network assignment to implement a single hidden-layer neural network in C++ using the C++ standard library. The neural network is then applied to an Aria robot using the Aria API.
 
-The system is comprised of three main classes
+
+## `Utilities`
+Contains matrix functionality and other useful utilities.
 
 ## `NeuralNetworkManager`
 Provides functionality to train and test multiple neural networks with different hyper-parameters.
@@ -93,3 +96,6 @@ To speed up hyper-parameter searching, parallel processing was introduced using 
 
 ## `TrainedNetwork`
 This class represents a trained a `NeuralNetwork` object
+
+## `Neuron`
+Unusued class from initial inefficient scalar-based implementation
