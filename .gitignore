@@ -1,0 +1,9 @@
+.vs/
+NeuralNet/AltData.w
+NeuralNet/mydatabest.w
+NeuralNet/small.w
+NeuralNet/COMPLEXNUMTEST.csv
+NeuralNet/Neuron.*
+NeuralNet/HiddenNeuron.*
+NeuralNet/OutputNeuron.*
+NeuralNet/NeuralNetworkSlow.*
