@@ -32,7 +32,7 @@ public:
 	// Other stopping criteria to come
 	void startTraining(int totalEpochs);
 
-	const MatrixFast& validate(const MatrixFast& input);
+	const MatrixContig& validate(const MatrixContig& input);
 	std::string identifierString() const;
 
 	static double error(double input);
@@ -79,10 +79,10 @@ private:
 	const ActivationFunction* hiddenActivationFunction;
 	const ActivationFunction* outputActivationFunction;
 
-	MatrixFast bestHiddenWeights;
-	MatrixFast bestHiddenBias;
-	MatrixFast bestOutputWeights;
-	MatrixFast bestOutputBias;
+	MatrixContig bestHiddenWeights;
+	MatrixContig bestHiddenBias;
+	MatrixContig bestOutputWeights;
+	MatrixContig bestOutputBias;
 
 	// Current epoch
 	int epoch = 0;
@@ -102,59 +102,59 @@ private:
 
 	// Row vector containing current input
 	// Dimensions: (1, numInput)
-	MatrixFast X;
+	MatrixContig X;
 
 	// Row vector containing current target
 	// Dimensions: (1, numOutput)
-	MatrixFast T;
+	MatrixContig T;
 	
 	// Matrix of weights connecting input to hidden layer
 	// Dimensions: (numInput, numHiddenNeuron)
-	MatrixFast hiddenWeights;
+	MatrixContig hiddenWeights;
 	// Row vector of hidden layer biases
 	// Dimensions: (1, numHiddenNeuron)
-	MatrixFast hiddenBias;
+	MatrixContig hiddenBias;
 	// Matrix of weights connecting hidden layer to outputs
 	// Dimensions: (numHiddenNeuron, numOutput) 
-	MatrixFast outputWeights;
+	MatrixContig outputWeights;
 	// Row vector of output layer biases
 	// Dimensions: (1, numOutput)
-	MatrixFast outputBias;
+	MatrixContig outputBias;
 
 	// Row vector containing pre-activation function values of the hidden neurons
 	// Dimensions: (1, numHiddenNeuron)
-	MatrixFast VH;
+	MatrixContig VH;
 	// Row vector containing pre-activation function values of the output neurons
 	// Dimensions: (1, numOutput)
-	MatrixFast V;
+	MatrixContig V;
 
 	// Row vector containing the values of the hidden neurons
 	// Dimensions: (1, numHiddenNeuron)
-	MatrixFast H;
+	MatrixContig H;
 	// Row vector containing values of the output neurons
 	// Dimensions: (1, numOutput)
-	MatrixFast Y;
+	MatrixContig Y;
 
 	// Row vector containing the error of outputs
 	// Dimensions: (1, numOutput)
-	MatrixFast Error;
+	MatrixContig Error;
 
 	// Row vector containing pre-activation function values of hidden neurons
 	// Dimensions: (1, numOutput)
-	MatrixFast localGradient;
+	MatrixContig localGradient;
 	// Row vector containing pre-activation function values of hidden neurons
 	// Dimensions: (1, numHiddenNeuron)
-	MatrixFast localHiddenGradient;
+	MatrixContig localHiddenGradient;
 
 	// Dimensions: (numInput, numHiddenNeuron)
-	MatrixFast alphaHiddenWeight;
+	MatrixContig alphaHiddenWeight;
 	// Dimensions: (1, numHiddenNeuron)
-	MatrixFast alphaHiddenBias;
+	MatrixContig alphaHiddenBias;
 
 	// Dimensions: (numHiddenNeuron, numOutput) 
-	MatrixFast alphaOutputWeight;
+	MatrixContig alphaOutputWeight;
 	// Dimensions: (1, numOutput) 
-	MatrixFast alphaOutputBias;
+	MatrixContig alphaOutputBias;
 	
 
 	// Functions
@@ -199,10 +199,10 @@ private:
 	int numInput{};
 	int numHiddenNeurons{};
 	int numOutput{};
-	MatrixFast* HW;
-	MatrixFast* HB;
-	MatrixFast* OW;
-	MatrixFast* OB;
+	MatrixContig* HW;
+	MatrixContig* HB;
+	MatrixContig* OW;
+	MatrixContig* OB;
 	double LAMBDA{};
 	double* inputScale;
 	double* outputScale;

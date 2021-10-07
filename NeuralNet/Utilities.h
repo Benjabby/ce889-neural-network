@@ -201,3 +201,67 @@ private:
 	std::vector<std::vector<double*>> allocate(std::vector<std::vector<double>>& vecVec);
 };
 
+
+class MatrixContig
+{
+	const int rows;
+	const int cols;
+	double* backing;
+public:
+
+	MatrixContig(int rows, int cols);
+
+	MatrixContig(int rows, int cols, double(*f)());
+	// Copy constructor, creates new vector backing and copies the values from c
+	MatrixContig(const MatrixContig& c);
+	MatrixContig(TuplePair& t);
+	MatrixContig(std::vector<std::vector<double>>& vecVec);
+
+	void set(TuplePair tuple);
+	void set(const MatrixContig& other);
+
+	TuplePair getTuple() const;
+
+	//void set(int r, int c, double v);
+
+	// M.value(r,c) is just short/longhand for *(M[r][c]). Don't know if I ever use it.
+	double value(int r, int c) const;
+
+	// Applies a function of two inputs, using each element in matrix as first output. Outputs matrix to output.
+	void applyFunction(double(*f)(double, double), double l, MatrixContig* output) const;
+	// Applies a function of two inputs, to each element in place.
+	void applyFunction(double(*f)(double, double), double l);
+
+	// Applies a function to each element of the matrix. Outputs matrix to output.
+	void applyFunction(double(*f)(double), MatrixContig* output) const;
+	// Applies a function to each element in place.
+	void applyFunction(double(*f)(double));
+
+	void hadamard(const MatrixContig* h);
+
+	void scale(double s, MatrixContig* output) const;
+	void scale(double s);
+
+	static void add(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output);
+	static void subtract(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output);
+
+	static void multiply(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output, bool transposeLHS = false, bool transposeRHS = false);
+	static void hadamard(const MatrixContig* lhs, const  MatrixContig* rhs, MatrixContig* output);
+
+	MatrixContig& operator+=(const MatrixContig& a);
+	MatrixContig& operator-=(const MatrixContig& a);
+
+	void clear();
+
+	friend std::ostream& operator<<(std::ostream& os, const MatrixContig m);
+
+	~MatrixContig();
+
+private:
+	void allocate();
+	void allocate(double(*f)());
+	void allocate(const MatrixContig& c);
+	void allocate(const TuplePair & t);
+	void allocate(std::vector<std::vector<double>>& vecVec);
+};
+

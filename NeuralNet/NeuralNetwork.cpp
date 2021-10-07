@@ -54,7 +54,7 @@ NeuralNetwork::NeuralNetwork(int numHiddenNeurons)
 	outputWeights = outputWeights.applyFunction(initRandom);
 }*/
 
-const MatrixFast& NeuralNetwork::validate(const MatrixFast& input)
+const MatrixContig& NeuralNetwork::validate(const MatrixContig& input)
 {
 	if(!trained)
 	{
@@ -158,7 +158,7 @@ void NeuralNetwork::runEpoch()
 			T.set(sample.y);
 			feedforward();
 
-			MatrixFast::subtract(&T, &Y, &Error);
+			MatrixContig::subtract(&T, &Y, &Error);
 			Error.applyFunction(error);
 
 			validationError[epoch] += Error.getTuple();
@@ -191,11 +191,11 @@ bool NeuralNetwork::stopEarly()
 
 void NeuralNetwork::feedforward()
 {
-	MatrixFast::multiply(&X, &hiddenWeights, &VH); // VH = X*hiddenWeights
+	MatrixContig::multiply(&X, &hiddenWeights, &VH); // VH = X*hiddenWeights
 	VH += hiddenBias;
 	VH.applyFunction(hiddenActivationFunction->activation,LAMBDA, &H);
 	
-	MatrixFast::multiply(&H, &outputWeights, &V); // V = H*outputWeights
+	MatrixContig::multiply(&H, &outputWeights, &V); // V = H*outputWeights
 	V += outputBias;
 	V.applyFunction(outputActivationFunction->activation, LAMBDA, &Y);
 }
@@ -203,30 +203,30 @@ void NeuralNetwork::feedforward()
 void NeuralNetwork::backpropagate()
 {
 	
-	MatrixFast::subtract(&T, &Y, &Error); // Error = T-Y
+	MatrixContig::subtract(&T, &Y, &Error); // Error = T-Y
 
 	// localGradient = (logistic derivative at V) .* Error
 	V.applyFunction(outputActivationFunction->derivative, LAMBDA, &localGradient);
 	localGradient.hadamard(&Error);
 
-	MatrixFast G2(1, numHiddenNeurons);
+	MatrixContig G2(1, numHiddenNeurons);
 	VH.applyFunction(hiddenActivationFunction->derivative, LAMBDA,&G2);
 
-	MatrixFast::multiply(&localGradient, &outputWeights, &localHiddenGradient, false, true);
+	MatrixContig::multiply(&localGradient, &outputWeights, &localHiddenGradient, false, true);
 	localHiddenGradient.hadamard(&G2);
 
-	MatrixFast dOW(numHiddenNeurons, numOutput);
-	MatrixFast::multiply(&H, &localGradient, &dOW, true, false);
+	MatrixContig dOW(numHiddenNeurons, numOutput);
+	MatrixContig::multiply(&H, &localGradient, &dOW, true, false);
 	dOW.scale(ETA);
 
-	MatrixFast dHW(numInput, numHiddenNeurons);
-	MatrixFast::multiply(&X, &localHiddenGradient, &dHW, true, false);
+	MatrixContig dHW(numInput, numHiddenNeurons);
+	MatrixContig::multiply(&X, &localHiddenGradient, &dHW, true, false);
 	dHW.scale(ETA);
 
-	MatrixFast dOB(1, numOutput);
+	MatrixContig dOB(1, numOutput);
 	localGradient.scale(ETA, &dOB);
 
-	MatrixFast dHB(1, numHiddenNeurons);
+	MatrixContig dHB(1, numHiddenNeurons);
 	localHiddenGradient.scale(ETA, &dHB);
 
 
@@ -292,7 +292,7 @@ NeuralNetwork::~NeuralNetwork() = default;
 
 #pragma region Trained Network
 
-TrainedNetwork::TrainedNetwork(NeuralNetwork& nn, double* inputScale, double* outputScale) : hiddenActivationFunction(nn.hiddenActivationFunction), outputActivationFunction(nn.outputActivationFunction), numInput(nn.numInput), numHiddenNeurons(nn.numHiddenNeurons), numOutput(nn.numOutput), HW(new MatrixFast(nn.bestHiddenWeights)), HB(new MatrixFast(nn.bestHiddenBias)), OW(new MatrixFast(nn.bestOutputWeights)), OB(new MatrixFast(nn.bestOutputBias)), LAMBDA(nn.LAMBDA), inputScale(inputScale), outputScale(outputScale), identifier(nn.identifierString()), testScore(-1)
+TrainedNetwork::TrainedNetwork(NeuralNetwork& nn, double* inputScale, double* outputScale) : hiddenActivationFunction(nn.hiddenActivationFunction), outputActivationFunction(nn.outputActivationFunction), numInput(nn.numInput), numHiddenNeurons(nn.numHiddenNeurons), numOutput(nn.numOutput), HW(new MatrixContig(nn.bestHiddenWeights)), HB(new MatrixContig(nn.bestHiddenBias)), OW(new MatrixContig(nn.bestOutputWeights)), OB(new MatrixContig(nn.bestOutputBias)), LAMBDA(nn.LAMBDA), inputScale(inputScale), outputScale(outputScale), identifier(nn.identifierString()), testScore(-1)
 {
 	if (!nn.trained) throw std::invalid_argument("NeuralNetwork must be trained to create a trained network");
 }
@@ -339,7 +339,7 @@ TrainedNetwork::TrainedNetwork(const char* weightFilename) : hiddenActivationFun
 		iss.ignore(1);
 	}
 
-	HW = new MatrixFast(tempHW);
+	HW = new MatrixContig(tempHW);
 
 	std::vector<std::vector<double>> tempHB(1, std::vector<double>(numHiddenNeurons));
 	iss = std::istringstream(lines[4]);
@@ -349,7 +349,7 @@ TrainedNetwork::TrainedNetwork(const char* weightFilename) : hiddenActivationFun
 		iss >> tempHB[0][j] >> c;
 	}
 
-	HB = new MatrixFast(tempHB);
+	HB = new MatrixContig(tempHB);
 
 	std::vector<std::vector<double>> tempOW(numHiddenNeurons, std::vector<double>(numOutput));
 	iss = std::istringstream(lines[5]);
@@ -363,7 +363,7 @@ TrainedNetwork::TrainedNetwork(const char* weightFilename) : hiddenActivationFun
 		iss.ignore(1);
 	}
 
-	OW = new MatrixFast(tempOW);
+	OW = new MatrixContig(tempOW);
 
 	std::vector<std::vector<double>> tempOB(1, std::vector<double>(numOutput));
 	iss = std::istringstream(lines[6]);
@@ -373,7 +373,7 @@ TrainedNetwork::TrainedNetwork(const char* weightFilename) : hiddenActivationFun
 		iss >> tempOB[0][j] >> c;
 	}
 
-	OB = new MatrixFast(tempOB);
+	OB = new MatrixContig(tempOB);
 
 }
 double TrainedNetwork::getTestScore() const
@@ -383,14 +383,14 @@ double TrainedNetwork::getTestScore() const
 TuplePair TrainedNetwork::predict(TuplePair& input, bool denormalizeOutput) const
 {
 	if (!input.isNormalized()) input.normalize(inputScale);
-	MatrixFast X(input);
-	MatrixFast H(1, numHiddenNeurons);
-	MatrixFast out(1, numOutput);
+	MatrixContig X(input);
+	MatrixContig H(1, numHiddenNeurons);
+	MatrixContig out(1, numOutput);
 	
-	MatrixFast::multiply(&X, HW, &H);
+	MatrixContig::multiply(&X, HW, &H);
 	H += *HB;
 	H.applyFunction(hiddenActivationFunction->activation,LAMBDA);
-	MatrixFast::multiply(&H, OW, &out);
+	MatrixContig::multiply(&H, OW, &out);
 	out += *OB;
 	out.applyFunction(outputActivationFunction->activation,LAMBDA);
 
@@ -451,7 +451,7 @@ std::ostream& operator<<(std::ostream& os, const TrainedNetwork& tn)
 	return  os << tn.identifier << " TEST SCORE: " << tn.testScore;
 }
 
-TrainedNetwork::TrainedNetwork(const TrainedNetwork& tn) : hiddenActivationFunction(tn.hiddenActivationFunction), outputActivationFunction(tn.outputActivationFunction), numInput(tn.numInput), numHiddenNeurons(tn.numHiddenNeurons), numOutput(tn.numOutput), HW(new MatrixFast(*tn.HW)), HB(new MatrixFast(*tn.HB)), OW(new MatrixFast(*tn.OW)), OB(new MatrixFast(*tn.OB)), LAMBDA(tn.LAMBDA), inputScale(tn.inputScale), outputScale(tn.outputScale), identifier(tn.identifier), testScore(tn.testScore)
+TrainedNetwork::TrainedNetwork(const TrainedNetwork& tn) : hiddenActivationFunction(tn.hiddenActivationFunction), outputActivationFunction(tn.outputActivationFunction), numInput(tn.numInput), numHiddenNeurons(tn.numHiddenNeurons), numOutput(tn.numOutput), HW(new MatrixContig(*tn.HW)), HB(new MatrixContig(*tn.HB)), OW(new MatrixContig(*tn.OW)), OB(new MatrixContig(*tn.OB)), LAMBDA(tn.LAMBDA), inputScale(tn.inputScale), outputScale(tn.outputScale), identifier(tn.identifier), testScore(tn.testScore)
 {
 	
 }

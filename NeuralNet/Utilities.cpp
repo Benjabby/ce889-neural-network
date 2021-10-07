@@ -630,6 +630,342 @@ MatrixFast::~MatrixFast()
 
 #pragma endregion
 
+#pragma region Contigous Array Matrix
+
+void MatrixContig::allocate()
+{
+	backing = new double[rows*cols];
+
+	for (auto i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = 0;
+		}
+	}
+}
+
+void MatrixContig::allocate(double(*f)())
+{
+	backing = new double[rows*cols];
+
+	for (auto i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = f();
+		}
+	}
+}
+
+void MatrixContig::allocate(const MatrixContig & c)
+{
+	backing = new double[rows*cols];
+
+	for (auto i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = c.backing[i*cols + j];
+		}
+	}
+}
+
+void MatrixContig::allocate(const TuplePair & t)
+{
+	backing = new double[2];
+
+	backing[0] = t[0];
+	backing[1] = t[1];
+
+}
+
+void MatrixContig::allocate(std::vector<std::vector<double>>& vecVec)
+{
+	backing = new double[rows*cols];
+
+	for (auto i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = vecVec[i][j];
+		}
+	}
+}
+
+
+MatrixContig::MatrixContig(const int rows, const int cols) : rows(rows), cols(cols)
+{
+	allocate();
+}
+
+MatrixContig::MatrixContig(TuplePair& t) : rows(1), cols(2)
+{
+	allocate(t);
+}
+
+MatrixContig::MatrixContig(int rows, int cols, double(*f)()) : rows(rows), cols(cols)
+{
+	allocate(f);
+}
+
+MatrixContig::MatrixContig(const MatrixContig& c) : rows(c.rows), cols(c.cols)
+{
+	allocate(c);
+}
+
+MatrixContig::MatrixContig(std::vector<std::vector<double>>& vecVec) : rows(vecVec.size()), cols(vecVec[0].size())
+{
+	allocate(vecVec);
+}
+
+void MatrixContig::set(TuplePair tuple)
+{
+	if (rows != 1) throw std::runtime_error("Cannot set matrix from tuple if it is not a row vector");
+	if (cols != 2) throw std::runtime_error("Cannot set matrix from tuple if it does not have 2 columns");
+
+	backing[0] = tuple[0];
+	backing[1] = tuple[1];
+}
+
+TuplePair MatrixContig::getTuple() const
+{
+	return{ backing[0], backing[1] , true };
+}
+
+double MatrixContig::value(int r, int c) const { return backing[r*cols + c]; }
+
+void MatrixContig::applyFunction(double(*f)(double, double), double l, MatrixContig* output) const
+{
+	if (rows != output->rows) throw std::runtime_error("Output matrix must have the same rows to apply function");
+	if (cols != output->cols) throw std::runtime_error("Output matrix must have the same columns to apply function");
+
+#pragma omp parallel for
+	for (int i = 0; i < output->rows; i++)
+	{
+		for (auto j = 0; j < output->cols; j++)
+		{
+			output->backing[i*cols + j] = f(backing[i*cols + j], l);
+		}
+	}
+}
+
+void MatrixContig::applyFunction(double(*f)(double, double), double l)
+{
+	// Would this cause any problems?
+	applyFunction(f, l, this);
+}
+
+void MatrixContig::applyFunction(double(*f)(double), MatrixContig* output) const
+{
+	if (rows != output->rows) throw std::runtime_error("Output matrix must have the same rows to apply function");
+	if (cols != output->cols) throw std::runtime_error("Output matrix must have the same columns to apply function");
+
+#pragma omp parallel for
+	for (int i = 0; i < output->rows; i++)
+	{
+		for (auto j = 0; j < output->cols; j++)
+		{
+			output->backing[i*cols + j] = f(backing[i*cols + j]);
+		}
+	}
+}
+
+void MatrixContig::applyFunction(double(*f)(double))
+{
+	// Would this cause any problems?
+	applyFunction(f, this);
+}
+
+void MatrixContig::scale(double s, MatrixContig* output) const
+{
+	if (rows != output->rows) throw std::runtime_error("Output matrix must have the same rows to apply function");
+	if (cols != output->cols) throw std::runtime_error("Output matrix must have the same columns to apply function");
+
+	const int rows = output->rows;
+	const int cols = output->cols;
+#pragma omp parallel for
+	for (int i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			output->backing[i*cols + j] *= s;
+		}
+	}
+}
+
+void MatrixContig::scale(double s)
+{
+	// Again, would this cause any problems?
+	scale(s, this);
+}
+
+
+void MatrixContig::add(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output)
+{
+	if (lhs->rows != rhs->rows) throw std::runtime_error("LHS and RHS matrices must have the same rows to add");
+	if (lhs->cols != rhs->cols) throw std::runtime_error("LHS and RHS matrices must have the same columns to add");
+	if (lhs->rows != output->rows) throw std::runtime_error("Output matrix must have the same rows as operands to add");
+	if (lhs->cols != output->cols) throw std::runtime_error("Output matrix must have the same columns as operands to add");
+
+	const int rows = output->rows;
+	const int cols = output->cols;
+#pragma omp parallel for
+	for (int i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			output->backing[i*cols + j] = lhs->backing[i*cols + j] + rhs->backing[i*cols + j];
+		}
+	}
+}
+
+MatrixContig& MatrixContig::operator+=(const MatrixContig& a)
+{
+	add(this, &a, this);
+	return *this;
+}
+
+MatrixContig& MatrixContig::operator-=(const MatrixContig& a)
+{
+	subtract(this, &a, this);
+	return *this;
+}
+
+void MatrixContig::subtract(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output)
+{
+	if (lhs->rows != rhs->rows) throw std::runtime_error("LHS and RHS matrices must have the same rows to subtract");
+	if (lhs->cols != rhs->cols) throw std::runtime_error("LHS and RHS matrices must have the same columns to subtract");
+	if (lhs->rows != output->rows) throw std::runtime_error("Output matrix must have the same rows as operands to subtract");
+	if (lhs->cols != output->cols) throw std::runtime_error("Output matrix must have the same columns as operands to subtract");
+
+	const int rows = output->rows;
+	const int cols = output->cols;
+#pragma omp parallel for
+	for (int i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			output->backing[i*cols + j] = lhs->backing[i*cols + j] - rhs->backing[i*cols + j];
+		}
+	}
+}
+
+void MatrixContig::hadamard(const MatrixContig* h)
+{
+	hadamard(this, h, this);
+}
+
+void MatrixContig::hadamard(const MatrixContig * lhs, const MatrixContig * rhs, MatrixContig * output)
+{
+	if (lhs->rows != rhs->rows) throw std::runtime_error("LHS and RHS matrices must have the same rows to use Hadamard product");
+	if (lhs->cols != rhs->cols) throw std::runtime_error("LHS and RHS matrices must have the same columns to use Hadamard product");
+	if (lhs->rows != output->rows) throw std::runtime_error("Output matrix must have the same rows as operands to use Hadamard product");
+	if (lhs->cols != output->cols) throw std::runtime_error("Output matrix must have the same columns as operands to use Hadamard product");
+
+	const int rows = output->rows;
+	const int cols = output->cols;
+#pragma omp parallel for
+	for (int i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			output->backing[i*cols + j] = (lhs->backing[i*cols + j]) * (rhs->backing[i*cols + j]);
+		}
+	}
+}
+
+void MatrixContig::multiply(const MatrixContig* lhs, const MatrixContig* rhs, MatrixContig* output, const bool transposeLHS, const bool transposeRHS)
+{
+	const int lhsRows = transposeLHS ? lhs->cols : lhs->rows;
+	const int lhsCols = transposeLHS ? lhs->rows : lhs->cols;
+
+	const int rhsRows = transposeRHS ? rhs->cols : rhs->rows;
+	const int rhsCols = transposeRHS ? rhs->rows : rhs->cols;
+
+	if (lhsCols != rhsRows) throw std::runtime_error("LHS columns must equal RHS rows for matrix multiplication");
+
+	output->clear();
+
+	int i, j, k;
+#pragma omp parallel for
+	for (i = 0; i < lhsRows; i++)
+	{
+		for (j = 0; j < rhsCols; j++)
+		{
+			double sum = 0;
+			for (k = 0; k < lhsCols; k++)
+			{
+				sum += lhs->backing[(transposeLHS ? k : i)*lhs->cols + (transposeLHS ? i : k)] * rhs->backing[(transposeRHS ? j : k)*rhs->cols + (transposeRHS ? k : j)];
+			}
+			output->backing[i*rhsCols + j] = sum;
+		}
+	}
+
+	// Slower...
+	// Concurrency::parallel_for(int(0), lhsRows, [&](int i)
+	// {
+	// 	for (auto j = 0; j < rhsCols; j++)
+	// 	{
+	// 		for (auto k = 0; k < lhsCols; k++)
+	// 		{
+	// 			*output->backing[i][j] += (*lhs->backing[transposeLHS ? k : i][transposeLHS ? i : k]) * (*rhs->backing[transposeRHS ? j : k][transposeRHS ? k : j]);
+	// 		}
+	// 	}
+	// });
+
+}
+
+void MatrixContig::clear()
+{
+	for (auto i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = 0;
+		}
+	}
+}
+
+
+void MatrixContig::set(const MatrixContig & other)
+{
+	if (rows != other.rows) throw std::runtime_error("Matrices must have the same rows to set");
+	if (cols != other.cols) throw std::runtime_error("Matrices must have the same columns to set");
+
+#pragma omp parallel for
+	for (int i = 0; i < rows; i++)
+	{
+		for (auto j = 0; j < cols; j++)
+		{
+			backing[i*cols + j] = other.backing[i*cols + j];
+		}
+	}
+}
+
+std::ostream& operator<<(std::ostream& os, const MatrixContig m)
+{
+	os << "{";
+	for (auto i = 0; i < m.rows; i++)
+	{
+		os << "[";
+		for (auto j = 0; j < m.cols; j++)
+		{
+			os << m.backing[i*m.cols + j];
+			if (j < m.cols - 1) os << ',';
+		}
+		os << "]";
+	}
+	return os << "}";
+}
+
+MatrixContig::~MatrixContig()
+{
+	delete[] backing;
+}
+
+#pragma endregion
+
 #pragma region Activation Function
 
 const ActivationFunction* LOGISTIC = new ActivationFunction(ActivationFunction::logisticActivation, ActivationFunction::logisticDerivative);
