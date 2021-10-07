@@ -1,11 +1,9 @@
-# IMPORTANT NOTE
-As I have graduated and no longer have access to university resources including a working copy of Visual Studio, I am unable to verify the steps required to install the Aria API in order to get this code running.
-Code will still run to only train the neural network if all dependencies to Aria.h are removed and `RUNROBOT` in `NeuralNetworkManager.h` is set to `false`
-
-
 # ce889-neural-network
 Code for a neural network assignment to implement a single hidden-layer neural network in C++ using the C++ standard library. The neural network is then applied to an Aria robot using the Aria API.
 
+If you have access to the ARIA API and are running on a mobile robot, use the RunRobot build configuration. 
+
+Otherwise use the RunNetwork (default) configuration to train a demo neural network.
 
 ## `MatrixFast`
 Contains custom implemented, fast matrix functionality.
