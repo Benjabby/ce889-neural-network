@@ -7,13 +7,15 @@
 #include <fstream>
 #include <locale>
 #include <chrono>
+
+#ifdef RUNROBOT
 #include "Aria.h"
+#endif
 
 
 int main(int argc, char* argv[])
 {
-	if(RUNROBOT)
-	{
+#ifdef RUNROBOT
 		bool running = true;
 		try
 		{
@@ -52,9 +54,7 @@ int main(int argc, char* argv[])
 			std::cout << "Weight file format is incorrect";
 			throw std::runtime_error(std::string("Weight file format is incorrect"));
 		}
-	}
-	else
-	{
+#else
 		std::vector<LabeledTuple> GatheredData = std::vector<LabeledTuple>();
 		std::ifstream inData("data.csv");
 		if (inData)
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
 		NeuralNetworkManager NNM(GatheredData);
 
-	}
+#endif
 	return 0;
 }
 
@@ -121,7 +121,7 @@ NeuralNetworkManager::NeuralNetworkManager(std::vector<LabeledTuple>& labeledDat
 
 	
 	
-	 std::cout << "Running Neural Networks\nSize of Training Data: " << trainSet.size() << "\n" << "Size of Validation Data: " << validateSet.size() << "\n" << "Size of Test Data: " << testSet.size() << "\n";
+	 //std::cout << "Running Neural Networks\nSize of Training Data: " << trainSet.size() << "\n" << "Size of Validation Data: " << validateSet.size() << "\n" << "Size of Test Data: " << testSet.size() << "\n";
 	
 	 //exhaustiveTests(100);
 	
@@ -129,9 +129,10 @@ NeuralNetworkManager::NeuralNetworkManager(std::vector<LabeledTuple>& labeledDat
 	 //{
 	 //	std::cout << "***** TESTING (ORDERED) *****\n";
 	
-	 //	#pragma omp parallel
+	 int i;
+	 //	#pragma omp parallel private(i)
 	 //	#pragma omp for
-	 //	for(auto i = 0; i < trainedNetworks.size(); ++i)
+	 //	for(i = 0; i < trainedNetworks.size(); ++i)
 	 //	{
 	 //		testNetwork(trainedNetworks.at(i));
 	 //	}
@@ -146,7 +147,7 @@ NeuralNetworkManager::NeuralNetworkManager(std::vector<LabeledTuple>& labeledDat
 	
 	 //	const TrainedNetwork best = trainedNetworks.front();
 	
-	 //	best.exportWeights("v5.w");
+	 //	best.exportWeights("demo.w");
 	 //}
 }
 
@@ -406,15 +407,15 @@ void NeuralNetworkManager::normalizeData()
 	
 	for (auto const& value : allData)
 	{
-		inputScale[0] = min(inputScale[0], value.x[0]);
-		inputScale[1] = max(inputScale[1], value.x[0]);
-		inputScale[2] = min(inputScale[2], value.x[1]);
-		inputScale[3] = max(inputScale[3], value.x[1]);
+		inputScale[0] = std::min(inputScale[0], value.x[0]);
+		inputScale[1] = std::max(inputScale[1], value.x[0]);
+		inputScale[2] = std::min(inputScale[2], value.x[1]);
+		inputScale[3] = std::max(inputScale[3], value.x[1]);
 
-		outputScale[0] = min(outputScale[0], value.y[0]);
-		outputScale[1] = max(outputScale[1], value.y[0]);
-		outputScale[2] = min(outputScale[2], value.y[1]);
-		outputScale[3] = max(outputScale[3], value.y[1]);
+		outputScale[0] = std::min(outputScale[0], value.y[0]);
+		outputScale[1] = std::max(outputScale[1], value.y[0]);
+		outputScale[2] = std::min(outputScale[2], value.y[1]);
+		outputScale[3] = std::max(outputScale[3], value.y[1]);
 	}
 
 	std::cout << "INPUT SCALE: " << inputScale[0] << ", " << inputScale[1] << ", " << inputScale[2] << ", " << inputScale[3] << "\n";

@@ -1,0 +1,2 @@
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+RunNetwork|Win32|D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\|

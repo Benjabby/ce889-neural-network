@@ -2,7 +2,6 @@
 #include <vector>
 #include "NeuralNetwork.h"
 
-constexpr bool RUNROBOT = true;
 constexpr bool USE12 = true;
 constexpr bool MONORM = false;
 

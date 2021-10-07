@@ -538,13 +538,13 @@ void MatrixFast::multiply(const MatrixFast* lhs, const MatrixFast* rhs, MatrixFa
 
 	output->clear();
 
-	
-	#pragma omp parallel for
-	for(int i = 0; i < lhsRows; i++)
+	int i, j, k;
+	#pragma omp parallel for private(i, j, k)
+	for (i = 0; i < lhsRows; i++)
 	{
-		for (auto j = 0; j < rhsCols; j++)
+		for (j = 0; j < rhsCols; j++)
 		{
-			for (auto k = 0; k < lhsCols; k++)
+			for (k = 0; k < lhsCols; k++)
 			{
 				*output->backing[i][j] += (*lhs->backing[transposeLHS ? k : i][transposeLHS ? i : k]) * (*rhs->backing[transposeRHS ? j : k][transposeRHS ? k : j]);
 			}

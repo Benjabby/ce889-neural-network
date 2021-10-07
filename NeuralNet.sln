@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NeuralNet", "NeuralNet\NeuralNet.vcxproj", "{63C8854B-CA85-487D-8E02-0FE034E70BDA}"
 EndProject
@@ -11,6 +11,10 @@ Global
 		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+		RunNetwork|x64 = RunNetwork|x64
+		RunNetwork|x86 = RunNetwork|x86
+		RunRobot|x64 = RunRobot|x64
+		RunRobot|x86 = RunRobot|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.Debug|x64.ActiveCfg = Debug|x64
@@ -21,6 +25,14 @@ Global
 		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.Release|x64.Build.0 = Release|x64
 		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.Release|x86.ActiveCfg = Release|Win32
 		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.Release|x86.Build.0 = Release|Win32
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunNetwork|x64.ActiveCfg = RunNetwork|x64
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunNetwork|x64.Build.0 = RunNetwork|x64
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunNetwork|x86.ActiveCfg = RunNetwork|Win32
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunNetwork|x86.Build.0 = RunNetwork|Win32
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunRobot|x64.ActiveCfg = RunRobot|x64
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunRobot|x64.Build.0 = RunRobot|x64
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunRobot|x86.ActiveCfg = RunRobot|Win32
+		{63C8854B-CA85-487D-8E02-0FE034E70BDA}.RunRobot|x86.Build.0 = RunRobot|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

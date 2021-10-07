@@ -1,0 +1,23 @@
+﻿Build started 07/10/2021 12:51:08.
+     1>Project "D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\NeuralNet\NeuralNet.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /W3 /WX- /sdl /O2 /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"RunNetwork\\" /Fd"RunNetwork\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /Qpar /Qpar-report:1 /arch:AVX /Qvec-report:1 Utilities.cpp
+         Microsoft (R) C/C++ Optimizing Compiler Version 19.00.24210 for x86
+         Copyright (C) Microsoft Corporation.  All rights reserved.
+         
+         cl /c /ZI /W3 /WX- /sdl /O2 /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"RunNetwork\\" /Fd"RunNetwork\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt /Qpar /Qpar-report:1 /arch:AVX /Qvec-report:1 Utilities.cpp
+         
+         Utilities.cpp
+     1>d:\2019\autumn\ce889 - neural networks and deep learning\assignment\solo task\neuralnet\neuralnet\utilities.cpp(541): warning C4101: 'k': unreferenced local variable
+     1>d:\2019\autumn\ce889 - neural networks and deep learning\assignment\solo task\neuralnet\neuralnet\utilities.cpp(541): warning C4101: 'j': unreferenced local variable
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\RunNetwork\NeuralNet.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\RunNetwork\NeuralNet.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\RunNetwork\NeuralNet.lib" /MACHINE:X86 RunNetwork\Utilities.obj
+         RunNetwork\NeuralNetwork.obj
+         RunNetwork\NeuralNetworkManager.obj
+         NeuralNet.vcxproj -> D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\RunNetwork\NeuralNet.exe
+         NeuralNet.vcxproj -> D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\RunNetwork\NeuralNet.pdb (Full PDB)
+     1>Done Building Project "D:\2019\Autumn\CE889 - Neural Networks and Deep Learning\Assignment\Solo Task\NeuralNet\NeuralNet\NeuralNet.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.86
