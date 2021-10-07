@@ -5,8 +5,12 @@ If you have access to the ARIA API and are running on a mobile robot, use the Ru
 
 Otherwise use the RunNetwork (default) configuration to train a demo neural network.
 
-## `MatrixFast`
-Contains custom implemented, fast matrix functionality.
+## `MatrixContig`
+Contains custom implemented fast matrix functionality backed by a contiguous array, optimized with OpenMP
+
+`MatrixFast` is an alternate implementation backed by vector-of-vectors 
+`MatrixSlow` is a slower implementation.
+
 
 ## `NeuralNetworkManager`
 Provides functionality to train and test multiple neural networks with different hyper-parameters.
@@ -16,11 +20,11 @@ Represents a single hidden layer neural network for the provided training and va
 
 Feedforward process is achieved with the following code;
 
-    MatrixFast::multiply(&X, &hiddenWeights, &VH);
+    MatrixContig::multiply(&X, &hiddenWeights, &VH);
     VH += hiddenBias;
     VH.applyFunction(hiddenActivationFunction->activation,LAMBDA, &H);
     
-    MatrixFast::multiply(&H, &outputWeights, &V);
+    MatrixContig::multiply(&H, &outputWeights, &V);
     V += outputBias;
     V.applyFunction(outputActivationFunction->activation, LAMBDA, &Y);`
 
@@ -37,29 +41,29 @@ Thus the full feedforward equation is:
 
 Backpropagation is calculated with the following code:
 
-    MatrixFast::subtract(&T, &Y, &Error);
+    MatrixContig::subtract(&T, &Y, &Error);
     
     V.applyFunction(outputActivationFunction->derivative, LAMBDA, &localGradient);
     localGradient.hadamard(&Error);
     
-    MatrixFast G2(1, numHiddenNeurons);
+    MatrixContig G2(1, numHiddenNeurons);
     VH.applyFunction(hiddenActivationFunction->derivative, LAMBDA,&G2);
     
-    MatrixFast::multiply(&localGradient, &outputWeights, &localHiddenGradient, false, true);
+    MatrixContig::multiply(&localGradient, &outputWeights, &localHiddenGradient, false, true);
     localHiddenGradient.hadamard(&G2);
     
-    MatrixFast dOW(numHiddenNeurons, numOutput);
-    MatrixFast::multiply(&H, &localGradient, &dOW, true, false);
+    MatrixContig dOW(numHiddenNeurons, numOutput);
+    MatrixContig::multiply(&H, &localGradient, &dOW, true, false);
     dOW.scale(ETA);
     
-    MatrixFast dHW(numInput, numHiddenNeurons);
-    MatrixFast::multiply(&X, &localHiddenGradient, &dHW, true, false);
+    MatrixContig dHW(numInput, numHiddenNeurons);
+    MatrixContig::multiply(&X, &localHiddenGradient, &dHW, true, false);
     dHW.scale(ETA);
     
-    MatrixFast dOB(1, numOutput);
+    MatrixContig dOB(1, numOutput);
     localGradient.scale(ETA, &dOB);
     
-    MatrixFast dHB(1, numHiddenNeurons);
+    MatrixContig dHB(1, numHiddenNeurons);
     localHiddenGradient.scale(ETA, &dHB);
     
     
